@@ -21,6 +21,21 @@ go install github.com/noornee/reddit-dl/cmd/reddit-dl@latest
 ### Without Flags
 `reddit-dl '<reddit_url>'`
 
+### Cookies & Authentication (Bypassing 403 Forbidden)
+Reddit blocks unauthenticated requests with HTTP 403. `reddit-dl` supports browser cookies:
+
+- **Automatic fallback:** If Reddit returns 403 Forbidden, `reddit-dl` automatically searches for cookies in **Brave** browser (and other installed browsers) and retries the request.
+- **Explicit browser cookies:**
+  ```bash
+  reddit-dl -b brave '<reddit_url>'
+  reddit-dl -b chrome '<reddit_url>'
+  reddit-dl -b firefox '<reddit_url>'
+  ```
+- **Cookies file (Netscape format):**
+  ```bash
+  reddit-dl -c cookies.txt '<reddit_url>'
+  ```
+
 
 ## Installation (with binary package)
 To install reddit-dl binary, go to the [releases tab](https://github.com/noornee/reddit-dl/releases/tag/build), and download the appropriate file for your OS and extract it.

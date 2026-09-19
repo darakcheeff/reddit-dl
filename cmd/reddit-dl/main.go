@@ -12,34 +12,50 @@ import (
 )
 
 func main() {
-	// default url incase the url flag isnt passed
-	var raw_url string
-
-	if len(os.Args) > 1 {
-		raw_url = os.Args[1]
-	}
-
 	app := &cli.App{
 		Name:    "reddit-dl",
 		Usage:   "A reddit multimedia downloader",
 		Version: "0.66.5",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "url",
-				Usage: "a reddit post url",
-				Value: raw_url,
+				Name:    "url",
+				Aliases: []string{"u"},
+				Usage:   "a reddit post url",
 			},
 			&cli.BoolFlag{
-				Name:  "dash",
-				Usage: "download reddit video using Dash playlist with ffmpeg",
+				Name:    "dash",
+				Aliases: []string{"d"},
+				Usage:   "download reddit video using Dash playlist with ffmpeg",
+			},
+			&cli.StringFlag{
+				Name:    "cookies-from-browser",
+				Aliases: []string{"b"},
+				Usage:   "load cookies from browser (e.g. brave, chrome, firefox, edge, opera, safari)",
+			},
+			&cli.StringFlag{
+				Name:    "cookies",
+				Aliases: []string{"c"},
+				Usage:   "path to Netscape formatted cookies.txt file",
 			},
 		},
 		Action: func(ctx *cli.Context) error {
 			url := ctx.String("url")
+			if url == "" && ctx.Args().Present() {
+				url = ctx.Args().First()
+			}
 
 			if url == "" {
 				cli.ShowAppHelp(ctx)
 				return nil
+			}
+
+			cookiesBrowser := ctx.String("cookies-from-browser")
+			cookiesFile := ctx.String("cookies")
+
+			if cookiesBrowser != "" || cookiesFile != "" {
+				if err := helper.InitCookies(cookiesBrowser, cookiesFile); err != nil {
+					helper.ErrorLog.Printf("Warning: error initializing cookies: %v\n", err)
+				}
 			}
 
 			if ctx.Bool("dash") {

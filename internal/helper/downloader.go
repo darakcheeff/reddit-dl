@@ -65,6 +65,9 @@ func downloader(urls []string) {
 
 	// create client
 	client := grab.NewClient()
+	if Client != nil {
+		client.HTTPClient = Client
+	}
 
 	var wg sync.WaitGroup
 
@@ -74,6 +77,9 @@ func downloader(urls []string) {
 		go func(url string) {
 			defer wg.Done()
 			req, _ := grab.NewRequest(temp_dir, url)
+			if req != nil && req.HTTPRequest != nil {
+				req.HTTPRequest.Header.Set("User-Agent", DefaultUserAgent)
+			}
 
 			resp := client.Do(req)
 
@@ -96,8 +102,14 @@ func downloader(urls []string) {
 func downloader_nos(url, title string) {
 	// create client
 	client := grab.NewClient()
+	if Client != nil {
+		client.HTTPClient = Client
+	}
 
 	req, _ := grab.NewRequest("", url)
+	if req != nil && req.HTTPRequest != nil {
+		req.HTTPRequest.Header.Set("User-Agent", DefaultUserAgent)
+	}
 
 	resp := client.Do(req)
 
