@@ -15,7 +15,7 @@ func main() {
 	app := &cli.App{
 		Name:    "reddit-dl",
 		Usage:   "A reddit multimedia downloader",
-		Version: "0.66.5",
+		Version: "0.7.0",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "url",
